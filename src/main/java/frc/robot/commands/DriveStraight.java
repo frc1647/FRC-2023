@@ -15,13 +15,14 @@ public class DriveStraight extends CommandBase {
 
     NavX m_gyro;
     Drivetrain m_drive;
-    double Heading;
-    double error;
+    double Heading, error, setPointDistance, power;
     private final Timer m_timer = new Timer();
 
-    DriveStraight (Drivetrain drive, NavX gyro) {
+    DriveStraight (Drivetrain drive, NavX gyro, double distance, double speed) {
         this.m_gyro = gyro;
         this.m_drive = drive;
+        this.setPointDistance = distance;
+        this.power = speed;
     }
 
     @Override
@@ -33,16 +34,17 @@ public class DriveStraight extends CommandBase {
     @Override
     public void execute() {
         error = (m_gyro.getHeading() - Heading) * Constants.straightDriveP;
-        m_drive.drive(Constants.straightDrivePower - error, Constants.straightDrivePower + error);
+        m_drive.drive(power - error, power + error);
     }
 
-    //@Override
-    //public boolean isFinished() {
-        /*if (m_timer.get() > Constants.straightDriveTime) {
+    //encoder 42 ticks per rev, wheel circumference 1.57 feet, 65.9 * distance in feet
+    @Override
+    public boolean isFinished() {
+        if (m_drive.getRightPosition() >= setPointDistance) { 
             return true;
         }
         else {
             return false;
-        }*/
-    //}
+        }
+    }
 }

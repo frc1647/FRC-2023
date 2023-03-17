@@ -1,5 +1,6 @@
 package frc.robot.commands;
 
+import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.wpilibj2.command.PIDCommand;
 import frc.robot.Constants;
@@ -12,6 +13,7 @@ public class AutoBalance extends PIDCommand{
     NavX m_gyro;
     Drivetrain m_drive;
     double yawError;
+    double PIDoutput;
 
     public AutoBalance(Drivetrain drive, NavX gyro){
         super(
@@ -27,13 +29,14 @@ public class AutoBalance extends PIDCommand{
 
     @Override
     public void initialize() {
-        m_controller.reset();   //copied from definition
+        m_controller.reset();   //copied from definition of PIDCommand
         this.Heading = m_gyro.getHeading();
     }
 
     @Override
     public void execute() {
         yawError = (m_gyro.getHeading() - Heading) * Constants.AutoBalanceHeadingErrorP;
-        m_drive.drive(-m_controller.calculate(m_measurement.getAsDouble(), m_setpoint.getAsDouble()) - yawError + Constants.AutoBalanceBias, -m_controller.calculate(m_measurement.getAsDouble(), m_setpoint.getAsDouble()) + yawError + Constants.AutoBalanceBias);
+        PIDoutput = MathUtil.clamp(m_controller.calculate(m_measurement.getAsDouble(), 0), -Constants.autoBalanceMaxPower, Constants.autoBalanceMaxPower);
+        m_drive.drive(-PIDoutput - yawError + Constants.AutoBalanceBias, -PIDoutput + yawError + Constants.AutoBalanceBias);
     }
 }

@@ -4,10 +4,6 @@
 
 package frc.robot;
 
-import edu.wpi.first.networktables.NetworkTable;
-import edu.wpi.first.networktables.NetworkTableEntry;
-import edu.wpi.first.networktables.NetworkTableInstance;
-
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -33,6 +29,7 @@ public class Robot extends TimedRobot {
     // Instantiate our RobotContainer.  This will perform all our button bindings, and put our
     // autonomous chooser on the dashboard.
     m_robotContainer = new RobotContainer();
+    m_robotContainer.getLimeLight().setCamMode(1);
   }
 
   /**
@@ -49,13 +46,18 @@ public class Robot extends TimedRobot {
     // and running subsystem periodic() methods.  This must be called from the robot's periodic
     // block in order for anything in the Command-based framework to work.
     CommandScheduler.getInstance().run();
-    //m_robotContainer.getLimeLight().LimeLightPeriodic();
-    //SmartDashboard.putNumber("Phoenix Encoder", this.m_robotContainer.getClaw().getEncoderPosition());
+    m_robotContainer.getLimeLight().LimeLightPeriodic();
+    SmartDashboard.putNumber("Arm ", m_robotContainer.getArm().getEncoderPosition());
+    SmartDashboard.putNumber("Left Drive", m_robotContainer.getDriveTrain().getLeftPosition());
+    SmartDashboard.putNumber("Right Drive", m_robotContainer.getDriveTrain().getRightPosition());
+    //SmartDashboard.putNumber("Claw ", this.m_robotContainer.getClaw().getEncoderPosition());
   }
 
   /** This function is called once each time the robot enters Disabled mode. */
   @Override
-  public void disabledInit() {}
+  public void disabledInit() {
+    m_robotContainer.getLimeLight().setCamMode(1);
+  }
 
   @Override
   public void disabledPeriodic() {}
@@ -63,6 +65,7 @@ public class Robot extends TimedRobot {
   /** This autonomous runs the autonomous command selected by your {@link RobotContainer} class. */
   @Override
   public void autonomousInit() {
+    m_robotContainer.getLimeLight().setCamMode(0);
     m_autonomousCommand = m_robotContainer.getAutonomousCommand();
     // schedule the autonomous command (example)
     if (m_autonomousCommand != null) {
@@ -85,23 +88,27 @@ public class Robot extends TimedRobot {
     if (m_autonomousCommand != null) {
       m_autonomousCommand.cancel();
     }
+    m_robotContainer.getLimeLight().setCamMode(1);
   }
 
   /** This function is called periodically during operator control. */
   @Override
   public void teleopPeriodic() {
     this.m_robotContainer.getDriveTrain().drivePeriodic();
+    this.m_robotContainer.getArm().manualControl();
   }
 
   @Override
   public void testInit() {
+    m_robotContainer.getLimeLight().setCamMode(0);
     // Cancels all running commands at the start of test mode.
     CommandScheduler.getInstance().cancelAll();
   }
 
   /** This function is called periodically during test mode. */
   @Override
-  public void testPeriodic() {}
+  public void testPeriodic() {
+  }
 
   /** This function is called once when the robot is first started up. */
   @Override

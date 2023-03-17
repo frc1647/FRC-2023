@@ -20,6 +20,7 @@ public class NavX extends SubsystemBase {
   /** Creates a new NavX. */
   public NavX() {
     navX = new AHRS(SPI.Port.kMXP);
+    navX.calibrate();
     /*ahrs = new AHRS(SerialPort.Port.kMXP); // Alternatives:  SPI.Port.kMXP, I2C.Port.kMXP or SerialPort.Port.kUSB */
     //initialHeading = navX.getCompassHeading();
   }
@@ -36,10 +37,14 @@ public class NavX extends SubsystemBase {
     //SmartDashboard.putNumber("Roll", Roll);
   }
 
+  public void resetHeading() {
+    navX.reset();
+  }
+
   public double getHeading() {
     return Heading;
   }
-
+ 
   public double getPitch() {
     return Pitch;
   }

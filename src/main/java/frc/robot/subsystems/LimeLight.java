@@ -17,19 +17,26 @@ public class LimeLight extends SubsystemBase{
     NetworkTableEntry tx;
     NetworkTableEntry ty;
     NetworkTableEntry ta;
+    NetworkTableEntry tvert;
+    NetworkTableEntry camMode;
+    NetworkTableEntry ledMode;
     boolean isLimelight = true;
     double xLimelight;
     double yLimelight;
     double areaLimelight;
+    double verticalAreaLimelight;
 
     public LimeLight(RobotContainer robot){
         this.robotContainer = robot;
 
         try {
             NetworkTable table = NetworkTableInstance.getDefault().getTable("limelight");
-            this.tx = table.getEntry("tx"); //x cor (pointers)
-            this.ty = table.getEntry("ty"); //y cor 
-            this.ta = table.getEntry("ta"); //area of target
+            tx = table.getEntry("tx"); //x cor (pointers)
+            ty = table.getEntry("ty"); //y cor 
+            ta = table.getEntry("ta"); //area of target
+            tvert = table.getEntry("tvert");
+            camMode = table.getEntry("camMode");
+            ledMode = table.getEntry("ledMode");
         } catch (Exception e) {
             e.printStackTrace();
             this.isLimelight = false;
@@ -42,6 +49,7 @@ public class LimeLight extends SubsystemBase{
             this.xLimelight = tx.getDouble(0.0);
             this.yLimelight = ty.getDouble(0.0);
             this.areaLimelight = ta.getDouble(0.0);
+            this.verticalAreaLimelight = tvert.getDouble(0.0);
       
             //Limelight post to smart dashboard periodically
             SmartDashboard.putNumber("LimelightX", xLimelight);
@@ -57,5 +65,16 @@ public class LimeLight extends SubsystemBase{
     public double getArea(){
         return areaLimelight;
     }
+
+    public double getVerticalArea(){
+        return verticalAreaLimelight;
+    }
+
+    public void setCamMode(int setting) {
+        camMode.setInteger(setting);
+        ledMode.setInteger(setting);
+    }
+
+
 }
 

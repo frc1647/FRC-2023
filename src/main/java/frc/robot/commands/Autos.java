@@ -5,6 +5,7 @@
 package frc.robot.commands;
 
 import frc.robot.Constants;
+import frc.robot.subsystems.Arm;
 import frc.robot.subsystems.Drivetrain;
 import frc.robot.subsystems.ExampleSubsystem;
 import frc.robot.subsystems.LimeLight;
@@ -18,12 +19,12 @@ public final class Autos {
     return Commands.sequence(subsystem.exampleMethodCommand(), new ExampleCommand(subsystem));
   }
 
-  /*public static CommandBase lookAtTargetAuto(Drivetrain drive, LimeLight light) {
+  public static CommandBase lookAtTargetAuto(Drivetrain drive, LimeLight light) {
     return new LookAtTarget(drive, light);
-  }*/
+  }
 
-  public static CommandBase driveStraightAuto(Drivetrain drive, NavX gyro) {
-    return new DriveStraight(drive, gyro);
+  public static CommandBase driveStraightAuto(Drivetrain drive, NavX gyro, double distance) {
+    return new DriveStraight(drive, gyro, distance, Constants.straightDrivePower);
   }
 
   public static CommandBase autoBalanceAuto(Drivetrain drive, NavX gyro){
@@ -32,6 +33,14 @@ public final class Autos {
 
   public static CommandBase turnDegreesAuto(Drivetrain drive, NavX gyro, double setPointHeading){
     return new TurnDegrees(drive, gyro, setPointHeading);
+  }
+
+  public static CommandBase BasicSequentialAuto(Drivetrain drive, NavX gyro, LimeLight light, Arm arm){
+    return new BasicSequential(drive, gyro, light, arm);
+  }
+
+  public static CommandBase ClimbChargeStationAuto(Drivetrain drive, NavX gyro){
+    return new ClimbChargeStation(drive, gyro);
   }
 
   private Autos() {
