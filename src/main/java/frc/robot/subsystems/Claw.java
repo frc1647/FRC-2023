@@ -1,6 +1,6 @@
 package frc.robot.subsystems;
 
-import com.ctre.phoenix.motorcontrol.ControlMode;
+//import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.TalonFXFeedbackDevice;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
@@ -76,7 +76,7 @@ public class Claw extends SubsystemBase {
         m_claw.set(d);
     }
 
-    public Command closeClawSimple() {//being used
+    public CommandBase closeClawSimple() {//being used
         return runOnce(
             () -> {
                 m_claw.set(-.5);
@@ -84,7 +84,7 @@ public class Claw extends SubsystemBase {
         );
     }
 
-    public Command stop() {
+    public CommandBase stop() {
         return runOnce(
             () -> {
                 m_claw.set(0);

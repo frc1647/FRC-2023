@@ -7,7 +7,7 @@ package frc.robot;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.button.CommandGenericHID;
+//import edu.wpi.first.wpilibj2.command.button.CommandGenericHID;
 import edu.wpi.first.wpilibj2.command.button.CommandJoystick;
 import edu.wpi.first.wpilibj2.command.button.CommandPS4Controller;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
@@ -55,7 +55,7 @@ public class RobotContainer {
     m_chooser.addOption("Drive Straight 10ft", Autos.driveStraightAuto(m_Drivetrain, m_NavX, 659));
     m_chooser.addOption("Look At Reflective Tape", Autos.lookAtTargetAuto(m_Drivetrain, m_LimeLight));
     m_chooser.addOption("Turn Degrees", Autos.turnDegreesAuto(m_Drivetrain, m_NavX, Constants.AutoTurnDegreesHeadingSetPoint));
-    m_chooser.addOption("Basic Sequential", Autos.BasicSequentialAuto(m_Drivetrain, m_NavX, m_LimeLight, m_Arm));
+    m_chooser.addOption("Basic Sequential", Autos.BasicSequentialAuto(m_Drivetrain, m_NavX, m_LimeLight, m_Arm, m_Claw));
     m_chooser.addOption("Climb Charge Station", Autos.ClimbChargeStationAuto(m_Drivetrain, m_NavX));
     SmartDashboard.putData(m_chooser);
   }

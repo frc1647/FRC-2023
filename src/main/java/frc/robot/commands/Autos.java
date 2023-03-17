@@ -6,8 +6,8 @@ package frc.robot.commands;
 
 import frc.robot.Constants;
 import frc.robot.subsystems.Arm;
+import frc.robot.subsystems.Claw;
 import frc.robot.subsystems.Drivetrain;
-import frc.robot.subsystems.ExampleSubsystem;
 import frc.robot.subsystems.LimeLight;
 import frc.robot.subsystems.NavX;
 import edu.wpi.first.wpilibj2.command.CommandBase;
@@ -15,10 +15,6 @@ import edu.wpi.first.wpilibj2.command.Commands;
 
 public final class Autos {
   /** Example static factory for an autonomous command. */
-  public static CommandBase exampleAuto(ExampleSubsystem subsystem) {
-    return Commands.sequence(subsystem.exampleMethodCommand(), new ExampleCommand(subsystem));
-  }
-
   public static CommandBase lookAtTargetAuto(Drivetrain drive, LimeLight light) {
     return new LookAtTarget(drive, light);
   }
@@ -35,8 +31,8 @@ public final class Autos {
     return new TurnDegrees(drive, gyro, setPointHeading);
   }
 
-  public static CommandBase BasicSequentialAuto(Drivetrain drive, NavX gyro, LimeLight light, Arm arm){
-    return new BasicSequential(drive, gyro, light, arm);
+  public static CommandBase BasicSequentialAuto(Drivetrain drive, NavX gyro, LimeLight light, Arm arm, Claw claw){
+    return new BasicSequential(drive, gyro, light, arm, claw);
   }
 
   public static CommandBase ClimbChargeStationAuto(Drivetrain drive, NavX gyro){
