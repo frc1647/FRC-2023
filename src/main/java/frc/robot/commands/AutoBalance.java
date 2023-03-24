@@ -37,6 +37,6 @@ public class AutoBalance extends PIDCommand{
     public void execute() {
         yawError = (m_gyro.getHeading() - Heading) * Constants.AutoBalanceHeadingErrorP;
         PIDoutput = MathUtil.clamp(m_controller.calculate(m_measurement.getAsDouble(), 0), -Constants.autoBalanceMaxPower, Constants.autoBalanceMaxPower);
-        m_drive.drive(-PIDoutput - yawError + Constants.AutoBalanceBias, -PIDoutput + yawError + Constants.AutoBalanceBias);
+        m_drive.drive(-PIDoutput - yawError, -PIDoutput + yawError);
     }
 }

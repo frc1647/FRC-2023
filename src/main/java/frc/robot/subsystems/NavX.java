@@ -37,7 +37,7 @@ public class NavX extends SubsystemBase {
     //SmartDashboard.putNumber("Roll", Roll);
   }
 
-  public void resetHeading() {
+  public void reset() {
     navX.reset();
   }
 

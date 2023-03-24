@@ -5,6 +5,7 @@ import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.TalonFXFeedbackDevice;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -24,62 +25,46 @@ public class Claw extends SubsystemBase {
         m_claw.configFactoryDefault();
         m_claw.configSelectedFeedbackSensor(TalonFXFeedbackDevice.IntegratedSensor, Constants.kClawPIDLoopIdx, Constants.kClawTimeoutMs);
         m_claw.getSelectedSensorPosition();
-        
-        m_claw.setNeutralMode(NeutralMode.Coast);
-        m_claw.setSensorPhase(false);
-        m_claw.configAllowableClosedloopError(Constants.kClawPIDLoopIdx, Constants.kCLawAllowableError, 0);
-        m_claw.config_kP(Constants.kClawPIDLoopIdx, Constants.kClawPIDLoopP);
-        m_claw.config_kI(Constants.kClawPIDLoopIdx, Constants.kClawPIDLoopI);
-        m_claw.config_kD(Constants.kClawPIDLoopIdx, Constants.kClawPIDLoopD);
+
+        m_claw.setNeutralMode(NeutralMode.Brake);
+        //m_claw.setSensorPhase(false);
+        //m_claw.configAllowableClosedloopError(Constants.kClawPIDLoopIdx, Constants.kCLawAllowableError, 0);
+        //m_claw.config_kP(Constants.kClawPIDLoopIdx, Constants.kClawPIDLoopP);
+        //m_claw.config_kI(Constants.kClawPIDLoopIdx, Constants.kClawPIDLoopI);
+        //m_claw.config_kD(Constants.kClawPIDLoopIdx, Constants.kClawPIDLoopD);
 
         // Armen Idea
         //m_claw.configForwardLimitSwitchSource(TalonFXFeedbackDevice.IntegratedSensor, null, 0)
+    }
+
+    public void periodic() {
+        SmartDashboard.putNumber("Claw Temp", m_claw.getTemperature());
     }
 
     public double getEncoderPosition() {
         return this.m_claw.getSelectedSensorPosition();
     }
 
-    public CommandBase openClaw(){ //being used
-        return runOnce(
-            () -> {
-                //m_claw.set(ControlMode.Position, Constants.clawOpenPosition);
-                m_claw.set(.2);
-            }
-        );
-    }
-    
-    public CommandBase closeClaw(){
-        return runOnce(
-            () -> {
-                //m_claw.set(ControlMode.Position, Constants.clawClosedPosition);
-                m_claw.set(-.4);
-            }
-        );
-    }
-
-    /* 
-    public CommandBase closeClawArmenIdea(){
-        return runOnce(
-            () -> {
-                if (m_claw.isFwdLimitSwitchClosed()) {
-                    m_claw.set(ControlMode.PercentOutput, .2);
-                }
-            }
-        );
-    }*/
-
     public void reset(){
     }
 
     public void motorSetSpeed(double d) {
-        m_claw.set(d);
+        m_claw.set(.4 * d);
     }
 
-    public CommandBase closeClawSimple() {//being used
+    public CommandBase closeClawSimple(){ //being used
         return runOnce(
             () -> {
-                m_claw.set(-.5);
+                //m_claw.set(ControlMode.Position, Constants.clawOpenPosition);
+                m_claw.set(.5);
+            }
+        );
+    }
+
+    public CommandBase openClawSimple() {//being used
+        return runOnce(
+            () -> {
+                m_claw.set(-.15);
             }
         );
     }

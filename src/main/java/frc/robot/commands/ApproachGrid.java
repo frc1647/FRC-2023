@@ -12,7 +12,7 @@ public class ApproachGrid extends PIDCommand {
         super(
             new PIDController(Constants.LookAtTargetP, Constants.LookAtTargetI, Constants.LookAtTargetD),
             light::getXcor,// Double Supplier
-            0.0,
+            0.5,
             output -> drive.approachGridDrive(output), //look at this function
             drive
         );

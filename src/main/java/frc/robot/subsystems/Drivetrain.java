@@ -17,6 +17,7 @@ import com.revrobotics.CANSparkMax;
 import com.revrobotics.RelativeEncoder;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 import com.revrobotics.SparkMaxRelativeEncoder;
+import com.revrobotics.CANSparkMax.IdleMode;
 
 
 public class Drivetrain extends SubsystemBase {
@@ -37,6 +38,11 @@ public class Drivetrain extends SubsystemBase {
     var m_frontRight = new CANSparkMax(Constants.FRONTRIGHTCAN, MotorType.kBrushless);
     var m_backRight = new CANSparkMax(Constants.BACKRIGHTCAN, MotorType.kBrushless);
 
+    m_frontLeft.setIdleMode(IdleMode.kCoast);
+    m_frontRight.setIdleMode(IdleMode.kCoast);
+    m_backLeft.setIdleMode(IdleMode.kCoast);
+    m_backRight.setIdleMode(IdleMode.kCoast);
+
     MotorControllerGroup m_left = new MotorControllerGroup(m_frontLeft, m_backLeft);
     MotorControllerGroup m_right = new MotorControllerGroup(m_frontRight, m_backRight);
 
@@ -50,8 +56,11 @@ public class Drivetrain extends SubsystemBase {
   }
 
   public void drive(double leftSpeed, double rightSpeed) {
-    //tankDrive is a method that controlls motors seperately
-    m_robotDrive.tankDrive(leftSpeed, rightSpeed);
+    if (Math.abs(leftSpeed) > .05 || Math.abs(rightSpeed) > .05) {
+      m_robotDrive.tankDrive(leftSpeed, rightSpeed);
+    } else {
+      m_robotDrive.tankDrive(0, 0);
+    }
   }
 
   public void drivePeriodic() {

@@ -50,7 +50,7 @@ public class Robot extends TimedRobot {
     SmartDashboard.putNumber("Arm ", m_robotContainer.getArm().getEncoderPosition());
     SmartDashboard.putNumber("Left Drive", m_robotContainer.getDriveTrain().getLeftPosition());
     SmartDashboard.putNumber("Right Drive", m_robotContainer.getDriveTrain().getRightPosition());
-    //SmartDashboard.putNumber("Claw ", this.m_robotContainer.getClaw().getEncoderPosition());
+    SmartDashboard.putNumber("Claw ", this.m_robotContainer.getClaw().getEncoderPosition());
   }
 
   /** This function is called once each time the robot enters Disabled mode. */
@@ -65,6 +65,8 @@ public class Robot extends TimedRobot {
   /** This autonomous runs the autonomous command selected by your {@link RobotContainer} class. */
   @Override
   public void autonomousInit() {
+    m_robotContainer.getArm().enablePID();
+    m_robotContainer.getGyro().reset();
     m_robotContainer.getLimeLight().setCamMode(0);
     m_autonomousCommand = m_robotContainer.getAutonomousCommand();
     // schedule the autonomous command (example)
@@ -89,13 +91,15 @@ public class Robot extends TimedRobot {
       m_autonomousCommand.cancel();
     }
     m_robotContainer.getLimeLight().setCamMode(1);
+    m_robotContainer.getArm().disablePID();
   }
 
   /** This function is called periodically during operator control. */
   @Override
   public void teleopPeriodic() {
     this.m_robotContainer.getDriveTrain().drivePeriodic();
-    this.m_robotContainer.getArm().manualControl();
+    this.m_robotContainer.getArm().manualControl(-m_robotContainer.getOperatorController().getLeftY());
+    this.m_robotContainer.getClaw().motorSetSpeed(-m_robotContainer.getOperatorController().getRawAxis(4));
   }
 
   @Override
@@ -107,8 +111,7 @@ public class Robot extends TimedRobot {
 
   /** This function is called periodically during test mode. */
   @Override
-  public void testPeriodic() {
-  }
+  public void testPeriodic() {}
 
   /** This function is called once when the robot is first started up. */
   @Override

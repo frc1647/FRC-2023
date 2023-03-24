@@ -40,7 +40,8 @@ public class RobotContainer {
   //private final CommandXboxController m_driverController = new CommandXboxController(OperatorConstants.kDriverControllerPort);
 
   //PS4 Contoller
-  private final CommandPS4Controller m_driverController = new CommandPS4Controller(5);
+  private final CommandPS4Controller m_driverController = new CommandPS4Controller(OperatorConstants.kDriverControllerPort);
+  private final CommandXboxController m_OperatorController = new CommandXboxController(OperatorConstants.kOperatorControllerPort);
 
   private final CommandJoystick m_RightStick = new CommandJoystick(OperatorConstants.kRightStickPort);
   private final CommandJoystick m_LeftStick = new CommandJoystick(OperatorConstants.kLeftStickPort);
@@ -52,11 +53,13 @@ public class RobotContainer {
 
     // Autonomous command chooser
     m_chooser.setDefaultOption("Auto Balance", Autos.autoBalanceAuto(m_Drivetrain, m_NavX));
-    m_chooser.addOption("Drive Straight 10ft", Autos.driveStraightAuto(m_Drivetrain, m_NavX, 659));
+    m_chooser.addOption("Drive Straight 10ft", Autos.driveStraightAuto(m_Drivetrain, m_NavX, 60));
     m_chooser.addOption("Look At Reflective Tape", Autos.lookAtTargetAuto(m_Drivetrain, m_LimeLight));
-    m_chooser.addOption("Turn Degrees", Autos.turnDegreesAuto(m_Drivetrain, m_NavX, Constants.AutoTurnDegreesHeadingSetPoint));
+    m_chooser.addOption("Turn Degrees", Autos.turnDegreesAuto(m_Drivetrain, m_NavX, 180));
     m_chooser.addOption("Basic Sequential", Autos.BasicSequentialAuto(m_Drivetrain, m_NavX, m_LimeLight, m_Arm, m_Claw));
     m_chooser.addOption("Climb Charge Station", Autos.ClimbChargeStationAuto(m_Drivetrain, m_NavX));
+    m_chooser.addOption("Approach grid", Autos.ApproachGridAuto(m_Drivetrain, m_LimeLight));
+    m_chooser.addOption("R2 & B2", Autos.R2(m_Drivetrain, m_NavX, m_LimeLight, m_Arm, m_Claw));
     SmartDashboard.putData(m_chooser);
   }
 
@@ -70,10 +73,9 @@ public class RobotContainer {
    * joysticks}.
    */ 
   private void configureBindings() {
-    //m_driverController.a().onTrue(m_Claw.closeClaw());
-    //m_driverController.triangle().onTrue(m_Claw.closeClawSimple());
-    //m_driverController.R1().onTrue(m_Claw.stop());
-    //m_driverController.square().onTrue(m_Claw.openClaw());
+    m_LeftStick.button(3).onTrue(m_Claw.openClawSimple());
+    m_LeftStick.button(2).onTrue(m_Claw.stop());
+    m_LeftStick.button(1).onTrue(m_Claw.closeClawSimple());
     //m_driverController.circle().onTrue(m_Arm.UpSimple());
     //m_driverController.cross().onTrue(m_Arm.DownSimple());
   }
@@ -90,12 +92,20 @@ public class RobotContainer {
     return this.m_Arm;
   }
 
-  //public Claw getClaw(){
-  //  return this.m_Claw;
-  //}
+  public Claw getClaw(){
+    return this.m_Claw;
+  }
+
+  public NavX getGyro(){
+    return this.m_NavX;
+  }
 
   public CommandPS4Controller getDriveController() {
     return this.m_driverController;
+  }
+
+  public CommandXboxController getOperatorController() {
+    return this.m_OperatorController;
   }
 
   public CommandJoystick getRightStick() {
@@ -108,7 +118,6 @@ public class RobotContainer {
 
   public Command getAutonomousCommand() {
     // An example command will be run in autonomous
-    //return Autos.autoBalanceAuto(m_Drivetrain, m_NavX);
     return m_chooser.getSelected();
   }
 }
