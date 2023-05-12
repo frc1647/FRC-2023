@@ -8,6 +8,8 @@ import frc.robot.subsystems.Drivetrain;
 import frc.robot.subsystems.LimeLight;
 
 public class ApproachGrid extends PIDCommand {
+
+    LimeLight m_light;
     public ApproachGrid(Drivetrain drive, LimeLight light) {
         super(
             new PIDController(Constants.LookAtTargetP, Constants.LookAtTargetI, Constants.LookAtTargetD),
@@ -16,5 +18,13 @@ public class ApproachGrid extends PIDCommand {
             output -> drive.approachGridDrive(output), //look at this function
             drive
         );
-    } 
+
+        this.m_light = light;
+        addRequirements(drive);
+    }
+
+    @Override
+    public boolean isFinished() {
+        return m_light.getVerticalArea() > 22;
+    }
 }

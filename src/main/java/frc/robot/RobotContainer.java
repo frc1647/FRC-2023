@@ -7,11 +7,11 @@ package frc.robot;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
-//import edu.wpi.first.wpilibj2.command.button.CommandGenericHID;
 import edu.wpi.first.wpilibj2.command.button.CommandJoystick;
 import edu.wpi.first.wpilibj2.command.button.CommandPS4Controller;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
+import frc.robot.Constants.ArmConstants;
 import frc.robot.Constants.OperatorConstants;
 import frc.robot.commands.Autos;
 import frc.robot.subsystems.Arm;
@@ -19,6 +19,7 @@ import frc.robot.subsystems.Claw;
 import frc.robot.subsystems.Drivetrain;
 import frc.robot.subsystems.LimeLight;
 import frc.robot.subsystems.NavX;
+import frc.robot.commands.ApproachGrid;
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
@@ -53,13 +54,19 @@ public class RobotContainer {
 
     // Autonomous command chooser
     m_chooser.setDefaultOption("Auto Balance", Autos.autoBalanceAuto(m_Drivetrain, m_NavX));
-    m_chooser.addOption("Drive Straight 10ft", Autos.driveStraightAuto(m_Drivetrain, m_NavX, 60));
+    m_chooser.addOption("Drive Straight 10ft", Autos.driveStraightAuto(m_Drivetrain, m_NavX, 80));
     m_chooser.addOption("Look At Reflective Tape", Autos.lookAtTargetAuto(m_Drivetrain, m_LimeLight));
     m_chooser.addOption("Turn Degrees", Autos.turnDegreesAuto(m_Drivetrain, m_NavX, 180));
     m_chooser.addOption("Basic Sequential", Autos.BasicSequentialAuto(m_Drivetrain, m_NavX, m_LimeLight, m_Arm, m_Claw));
     m_chooser.addOption("Climb Charge Station", Autos.ClimbChargeStationAuto(m_Drivetrain, m_NavX));
     m_chooser.addOption("Approach grid", Autos.ApproachGridAuto(m_Drivetrain, m_LimeLight));
-    m_chooser.addOption("R2 & B2", Autos.R2(m_Drivetrain, m_NavX, m_LimeLight, m_Arm, m_Claw));
+    m_chooser.addOption("R2 & B2", Autos.R2Simple(m_Drivetrain, m_NavX, m_LimeLight, m_Arm, m_Claw)); //
+    m_chooser.addOption("claw close", Autos.ClawClose(m_Claw));
+    m_chooser.addOption("Move arm", Autos.moveArmAuto(m_Arm, ArmConstants.midGoalConePos));
+    m_chooser.addOption("practice", Autos.limelightfreeAuto(m_Drivetrain, m_NavX, m_Arm, m_Claw));
+    m_chooser.addOption("bump and forward", Autos.bumperCars(m_Drivetrain, m_NavX, m_Arm));
+    m_chooser.addOption("score mid and back up", Autos.gamerR1(m_Drivetrain, m_NavX, m_LimeLight, m_Arm, m_Claw));
+    m_chooser.addOption("dock", Autos.dockWithCharge(m_Drivetrain, m_NavX, m_Arm));
     SmartDashboard.putData(m_chooser);
   }
 
@@ -73,10 +80,17 @@ public class RobotContainer {
    * joysticks}.
    */ 
   private void configureBindings() {
-    m_LeftStick.button(3).onTrue(m_Claw.openClawSimple());
-    m_LeftStick.button(2).onTrue(m_Claw.stop());
-    m_LeftStick.button(1).onTrue(m_Claw.closeClawSimple());
-    //m_driverController.circle().onTrue(m_Arm.UpSimple());
+    //m_OperatorController.y().whileTrue(m_Claw.openClaw());
+    //m_OperatorController.a().whileTrue(m_Claw.closeClawCone());
+    //m_OperatorController.x().whileTrue(m_Claw.stop());
+    //m_OperatorController.b().whileTrue(m_Claw.closeClawCube());
+    m_driverController.cross().onTrue(m_Drivetrain.setBrakeModeCommand());
+    m_driverController.circle().onTrue(m_Drivetrain.setCoastModeCommand());
+    m_driverController.R2().onTrue(m_Drivetrain.setSlowModeCommand());
+    m_driverController.R2().onFalse(m_Drivetrain.setFastModeCommand());
+    m_driverController.R1().onTrue(m_Drivetrain.setSlowModeCommand());
+    m_driverController.R1().onFalse(m_Drivetrain.setFastModeCommand());
+    //m_driverController.triangle().onTrue(ApproachGrid(m_Drivetrain, m_LimeLight));
     //m_driverController.cross().onTrue(m_Arm.DownSimple());
   }
 
@@ -117,7 +131,6 @@ public class RobotContainer {
   }
 
   public Command getAutonomousCommand() {
-    // An example command will be run in autonomous
     return m_chooser.getSelected();
   }
 }

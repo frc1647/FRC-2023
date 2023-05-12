@@ -49,22 +49,30 @@ public class Claw extends SubsystemBase {
     }
 
     public void motorSetSpeed(double d) {
-        m_claw.set(.4 * d);
+        m_claw.set(.35 * d);
     }
 
-    public CommandBase closeClawSimple(){ //being used
+    public CommandBase closeClawCube(){ //being used
         return runOnce(
             () -> {
                 //m_claw.set(ControlMode.Position, Constants.clawOpenPosition);
-                m_claw.set(.5);
+                m_claw.set(.1);
             }
         );
     }
 
-    public CommandBase openClawSimple() {//being used
+    public CommandBase closeClawCone() {//being used
         return runOnce(
             () -> {
-                m_claw.set(-.15);
+                m_claw.set(.25);
+            }
+        );
+    }
+
+    public CommandBase openClaw() {//being used
+        return runOnce(
+            () -> {
+                m_claw.set(-.1);
             }
         );
     }

@@ -6,6 +6,8 @@ package frc.robot.subsystems;
 
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 import edu.wpi.first.wpilibj.motorcontrol.MotorControllerGroup;
+import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.CommandBase;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.RobotContainer;
 import frc.robot.Constants;
@@ -26,6 +28,13 @@ public class Drivetrain extends SubsystemBase {
   DifferentialDrive m_robotDrive;
   private RelativeEncoder m_rightEncoder, m_leftEncoder;
   private double rightPosition, leftPosition;
+
+  CANSparkMax m_frontLeft;
+  CANSparkMax m_frontRight;
+  CANSparkMax m_backRight;
+  CANSparkMax m_backLeft;
+
+  double speedMultiplier = 1;
   
   public Drivetrain(RobotContainer robotContainer) { // Taking in as parameter
     this.robotContainer = robotContainer;
@@ -33,10 +42,10 @@ public class Drivetrain extends SubsystemBase {
 
     //WPI_VictorSPX is a constructor that initializes the motors to be used in code
     //now CANSparkMax
-    var m_frontLeft = new CANSparkMax(Constants.FRONTLEFTCAN, MotorType.kBrushless);
-    var m_backLeft = new CANSparkMax(Constants.BACKLEFTCAN, MotorType.kBrushless);
-    var m_frontRight = new CANSparkMax(Constants.FRONTRIGHTCAN, MotorType.kBrushless);
-    var m_backRight = new CANSparkMax(Constants.BACKRIGHTCAN, MotorType.kBrushless);
+    this.m_frontLeft = new CANSparkMax(Constants.FRONTLEFTCAN, MotorType.kBrushless);
+    this.m_backLeft = new CANSparkMax(Constants.BACKLEFTCAN, MotorType.kBrushless);
+    this.m_frontRight = new CANSparkMax(Constants.FRONTRIGHTCAN, MotorType.kBrushless);
+    this.m_backRight = new CANSparkMax(Constants.BACKRIGHTCAN, MotorType.kBrushless);
 
     m_frontLeft.setIdleMode(IdleMode.kCoast);
     m_frontRight.setIdleMode(IdleMode.kCoast);
@@ -57,16 +66,10 @@ public class Drivetrain extends SubsystemBase {
 
   public void drive(double leftSpeed, double rightSpeed) {
     if (Math.abs(leftSpeed) > .05 || Math.abs(rightSpeed) > .05) {
-      m_robotDrive.tankDrive(leftSpeed, rightSpeed);
+      m_robotDrive.tankDrive(leftSpeed  * speedMultiplier, rightSpeed  * speedMultiplier);
     } else {
       m_robotDrive.tankDrive(0, 0);
     }
-  }
-
-  public void drivePeriodic() {
-    //drive refers back tp the drive class
-    this.drive(- robotContainer.getDriveController().getLeftY(), - robotContainer.getDriveController().getRightY());
-    //this.drive(-1 * robotContainer.getLeftStick().getY(), -1 * robotContainer.getRightStick().getY());
   }
 
   public void turnClockwiseForLight(double turn){
@@ -98,5 +101,63 @@ public class Drivetrain extends SubsystemBase {
 
   public double getRightPosition() {
     return rightPosition;
+  }
+
+  public void setCoastMode() {
+    m_frontLeft.setIdleMode(IdleMode.kCoast);
+    m_frontRight.setIdleMode(IdleMode.kCoast);
+    m_backLeft.setIdleMode(IdleMode.kCoast);
+    m_backRight.setIdleMode(IdleMode.kCoast);
+  }
+
+  public void setBrakeMode() {
+    m_frontLeft.setIdleMode(IdleMode.kBrake);
+    m_frontRight.setIdleMode(IdleMode.kBrake);
+    m_backLeft.setIdleMode(IdleMode.kBrake);
+    m_backRight.setIdleMode(IdleMode.kBrake);
+  }
+
+  public void setSlowMode() {
+    speedMultiplier = .35;
+    setBrakeMode();
+  }
+
+  public void setFastMode() {
+    speedMultiplier = 1;
+    setCoastMode();
+  }
+
+  public CommandBase setCoastModeCommand() {
+    return runOnce(
+      () -> {
+        m_frontLeft.setIdleMode(IdleMode.kCoast);
+        m_frontRight.setIdleMode(IdleMode.kCoast);
+        m_backLeft.setIdleMode(IdleMode.kCoast);
+      m_backRight.setIdleMode(IdleMode.kCoast);}
+    );
+  }
+
+  public CommandBase setBrakeModeCommand() {
+    return runOnce(
+      () -> {
+        m_frontLeft.setIdleMode(IdleMode.kBrake);
+        m_frontRight.setIdleMode(IdleMode.kBrake);
+        m_backLeft.setIdleMode(IdleMode.kBrake);
+        m_backRight.setIdleMode(IdleMode.kBrake);}
+    );
+  }
+
+public Command setSlowModeCommand() {
+    return runOnce(
+      () -> {
+        setSlowMode();}
+    );
+  }
+
+  public Command setFastModeCommand() {
+    return runOnce(
+      () -> {
+        setFastMode();}
+    );
   }
 }

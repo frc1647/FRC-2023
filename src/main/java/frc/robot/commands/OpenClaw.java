@@ -1,7 +1,7 @@
 package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
-
+import frc.robot.Constants;
 import frc.robot.subsystems.Claw;
 
 public class OpenClaw extends CommandBase {
@@ -10,14 +10,16 @@ public class OpenClaw extends CommandBase {
 
     public OpenClaw(Claw claw) {
         m_claw = claw;
+        addRequirements(m_claw);
     }
 
     @Override
     public void execute() {
-        if (m_claw.getEncoderPosition() < 3200) {
-            m_claw.motorSetSpeed(-.15);
-        } else {
-            m_claw.motorSetSpeed(0);
-        }
+        m_claw.motorSetSpeed(-.15);
+    }
+
+    @Override
+    public boolean isFinished() {
+        return m_claw.getEncoderPosition() < Constants.clawOpenPosition;
     }
 }

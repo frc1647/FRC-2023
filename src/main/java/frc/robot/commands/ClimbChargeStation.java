@@ -8,7 +8,6 @@ import frc.robot.subsystems.NavX;
 public class ClimbChargeStation extends SequentialCommandGroup{
     public ClimbChargeStation(Drivetrain drive, NavX gyro) {
         addCommands(
-            new DriveStraight(drive, gyro, -50, Constants.straightDrivePower),
             new DriveOntoCharge(drive, gyro, -1),
             new AutoBalance(drive, gyro)
         );

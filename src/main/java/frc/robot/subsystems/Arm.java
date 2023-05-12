@@ -7,8 +7,6 @@ import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.PIDController;
-import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
-import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardComponent;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import edu.wpi.first.wpilibj2.command.PIDSubsystem;
@@ -51,6 +49,10 @@ public class Arm extends PIDSubsystem{
     public void periodic(){
         encoderPosition = m_leftArm.getSelectedSensorPosition(); 
         encoderRadians = encoderPosition * ArmConstants.EncoderRadians;
+        SmartDashboard.putNumber("Arm Setpoint", getController().getSetpoint());
+        SmartDashboard.putNumber("Arm P", getController().getP()); 
+        SmartDashboard.putNumber("Arm I", getController().getI());
+        SmartDashboard.putNumber("Arm D", getController().getD());
         super.periodic(); //calls use output
     }
 
@@ -70,8 +72,6 @@ public class Arm extends PIDSubsystem{
         } else {
             m_leftArm.setVoltage(output);
         }
-        
-        
     }
 
     @Override
@@ -80,7 +80,7 @@ public class Arm extends PIDSubsystem{
     }
 
     public boolean atSetpoint() {
-        return m_controller.atSetpoint();//Returns true if the error is within the tolernce fo the setpoint
+        return getController().atSetpoint();
     }
 
     public CommandBase UpSimple(){
@@ -94,39 +94,39 @@ public class Arm extends PIDSubsystem{
     public CommandBase DownSimple(){
         return runOnce(
             () -> {
-                m_leftArm.set(-ArmConstants.DownSpeed);//Sets the speed of the arm going up
+                m_leftArm.set(-ArmConstants.DownSpeed);
             }
         );
     }
 
     public void manualControl(double input){
-        m_leftArm.set(0.4 * input); //Sets the y positioning of the joystick
+        m_leftArm.set(0.4 * input); 
     }
 
-    public void enablePID() {
-        getController().setP(ArmConstants.kPIDLoopP);
-        getController().setI(ArmConstants.kPIDLoopI);
-        getController().setD(ArmConstants.kPIDLoopD);
-    }
+    // public void enablePID() {
+    //     getController().setP(ArmConstants.kPIDLoopP);
+    //     getController().setI(ArmConstants.kPIDLoopI);
+    //     getController().setD(ArmConstants.kPIDLoopD);
+    // }
     
-    public void disablePID() {
-        getController().setP(0);
-        getController().setI(0);
-        getController().setD(0);
-    }
+    // public void disablePID() {           //was called in robot teleopinit
+    //     getController().setP(0);
+    //     getController().setI(0);
+    //     getController().setD(0);
+    // }
 
     
-    public void testArmPID() {
-        getController().setP(SmartDashboard.getNumber("Arm P", 0)); 
-        getController().setI(SmartDashboard.getNumber("Arm I", 0));
-        getController().setD(SmartDashboard.getNumber("Arm D", 0));
-        setSetpoint(SmartDashboard.getNumber("Arm Setpoint", encoderPosition));
-    }
+    // public void testArmPID() {
+    //     getController().setP(SmartDashboard.getNumber("Arm P", 0)); 
+    //     getController().setI(SmartDashboard.getNumber("Arm I", 0));
+    //     getController().setD(SmartDashboard.getNumber("Arm D", 0));
+    //     setSetpoint(SmartDashboard.getNumber("Arm Setpoint", encoderPosition));
+    // }
 
-    public void testArmPIDInit() {
-        SmartDashboard.putNumber("Arm P", 0); 
-        SmartDashboard.putNumber("Arm I", 0);
-        SmartDashboard.putNumber("Arm D", 0);
-        SmartDashboard.putNumber("Arm Setpoint", encoderPosition);
-    }
+    // public void testArmPIDInit() {
+    //     SmartDashboard.putNumber("Arm P", 0); 
+    //     SmartDashboard.putNumber("Arm I", 0);
+    //     SmartDashboard.putNumber("Arm D", 0);
+    //     SmartDashboard.putNumber("Arm Setpoint", encoderPosition);
+    // }
 }

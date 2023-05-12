@@ -33,7 +33,11 @@ public class DriveOntoCharge extends CommandBase {
 
     @Override
     public void execute() {
-        error = (m_gyro.getHeading() - Heading) * Constants.straightDriveP;
+        if (Math.abs(Heading - m_gyro.getHeading()) > 180) {
+            error = (m_gyro.getHeading() + 360 - Heading) * Constants.straightDriveP;
+        } else {
+            error = (m_gyro.getHeading() - Heading) * Constants.straightDriveP;
+        }
         m_drive.drive(direction * Constants.OntoChargeStationSpeed - error, direction * Constants.OntoChargeStationSpeed + error);
     }
 
